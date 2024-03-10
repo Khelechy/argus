@@ -4,9 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"net"
-	"sync"
-	"bufio"
 
 	//"path/filepath"
 
@@ -15,15 +12,12 @@ import (
 
 type Argus struct {
 }
-
-var (
-	connection net.Conn
-	connLock   sync.Mutex
-)
-
+var messageChan chan string
 var watcher *fsnotify.Watcher
 
 func Watch(testfile string) {
+
+	messageChan = make(chan string)
 	// setup watcher
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
@@ -40,6 +34,9 @@ func Watch(testfile string) {
 				// monitor only for write events
 				if event.Op&fsnotify.Write == fsnotify.Write {
 					fmt.Println("Modified file:", event.Name)
+					go func(){
+						messageChan <-"00"
+					}()
 				}
 			case err := <-watcher.Errors:
 				log.Println("Error:", err)
@@ -69,74 +66,3 @@ func watchDirRecursively(path string, fi os.FileInfo, err error) error {
 
 	return nil
 }
-
-
-
-
-func SetupTCP() {
-	// Listen for incoming connections
-    listener, err := net.Listen("tcp", "localhost:8080")
-    if err != nil {
-        fmt.Println("Error:", err)
-        return
-    }
-	
-    defer listener.Close()
-
-    fmt.Println("Server is listening on port 8080")
-
-    for {
-        // Accept incoming connections
-        conn, err := listener.Accept()
-        if err != nil {
-            fmt.Println("Error:", err)
-            continue
-        }
-
-		connLock.Lock()
-		connection = conn
-		connLock.Unlock()
-
-        // Handle client connection in a goroutine
-        go handleClient(conn)
-    }
-}
-
-func SendDataToClient(conn net.Conn){
-	// Send data to the server
-	data := []byte("Hello, Server!")
-
-	_, err := conn.Write(data)
-
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-}
-
-func handleClient(conn net.Conn) {
-    defer conn.Close()
-
-	for {
-		scanner := bufio.NewScanner(conn)
-		for scanner.Scan() {
-			fmt.Println("Client says:", scanner.Text())
-		}
-	}
-
-	// // Create a buffer to read data into
-	// buffer := make([]byte, 1024)
-
-	//  for {
-	// 	// Read data from the client
-	// 	n, err := conn.Read(buffer)
-	// 	if err != nil {
-	// 	fmt.Println("Error:", err)
-	// 	return
-	//   }
-	
-	//   // Process and use the data (here, we'll just print it)
-	//   fmt.Printf("Received: %s\n", buffer[:n])
-	// }
-}
-
