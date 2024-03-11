@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"sync"
+	"log"
 )
 
 type Connection struct {
@@ -23,7 +24,7 @@ func SetupTCP(host, port string) {
 	addr := fmt.Sprintf("%s:%s", host, port)
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {
-		fmt.Println("Error:", err)
+		log.Fatal("Error:", err)
 		return
 	}
 
@@ -57,8 +58,6 @@ func SetupTCP(host, port string) {
 
 func SendDataToClients(eventMsg string) {
 
-	fmt.Println("sending data to client")
-
 	// Send data to the server
 	data := []byte(eventMsg)
 
@@ -86,7 +85,6 @@ func handleClient(clientConn *Connection) {
 		clientConn.Conn.Close()
 		connLock.Lock()
 		delete(connections, clientConn.Conn)
-		fmt.Println("Connection removed")
 		connLock.Unlock()
 	}()
 
@@ -112,7 +110,6 @@ func HandleBroadcast() {
 	for {
 		eventMsg := <-messageChan
 		if len(eventMsg) > 0 {
-			fmt.Println("Message sent to client")
 			SendDataToClients(eventMsg)
 		}
 	}

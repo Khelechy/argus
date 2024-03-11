@@ -29,6 +29,7 @@ func Watch(watchStructures []models.WatchStructure) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		log.Fatal(err)
+		return
 	}
 
 	fileWatcher = watcher
@@ -48,7 +49,7 @@ func Watch(watchStructures []models.WatchStructure) {
 				newEvent.Name = event.Name
 				eventData, err := json.Marshal(event)
 				if err != nil {
-					fmt.Println(err)
+					log.Fatal(err)
 					return
 				}
 				newEvent.EventMetaData = string(eventData)
@@ -76,7 +77,7 @@ func Watch(watchStructures []models.WatchStructure) {
 				go func(transferredEvent models.Event) {
 					data, err := json.Marshal(transferredEvent)
 					if err != nil {
-						fmt.Println(err)
+						log.Fatal(err)
 						return
 					}
 					messageChan <- string(data)
@@ -91,13 +92,13 @@ func Watch(watchStructures []models.WatchStructure) {
 	for _, watchStructure := range watchStructures {
 		if watchStructure.IsFolder && watchStructure.WatchRecursively { // Watch Recursively
 			if err := filepath.Walk(watchStructure.Path, watchDirRecursively); err != nil {
-				fmt.Println("ERROR", err)
+				log.Println("ERROR", err)
 			}
 		} else {
 
 			err = watcher.Add(watchStructure.Path)
 			if err != nil {
-				fmt.Println("ERROR", err)
+				log.Println("ERROR", err)
 			}
 		}
 	}
