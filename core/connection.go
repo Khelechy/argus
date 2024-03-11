@@ -1,10 +1,8 @@
-package argus
+package core
 
 import (
 	"fmt"
 	"net"
-
-	//"strings"
 	"sync"
 )
 
@@ -19,9 +17,11 @@ var (
 	connLock sync.Mutex
 )
 
-func SetupTCP() {
+func SetupTCP(host, port string) {
 	// Listen for incoming connections
-	listener, err := net.Listen("tcp", "localhost:1337")
+
+	addr := fmt.Sprintf("%s:%s", host, port)
+	listener, err := net.Listen("tcp", addr)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
@@ -29,7 +29,7 @@ func SetupTCP() {
 
 	defer listener.Close()
 
-	fmt.Println("Server is listening on port 8080")
+	fmt.Printf("Speak lord, your server is listening on port %s\n", port)
 
 	go HandleBroadcast()
 
@@ -55,12 +55,12 @@ func SetupTCP() {
 	}
 }
 
-func SendDataToClients() {
+func SendDataToClients(eventMsg string) {
 
 	fmt.Println("sending data to client")
 
 	// Send data to the server
-	data := []byte("Hello, Client!")
+	data := []byte(eventMsg)
 
 	if len(connections) == 0 {
 		fmt.Println("No active connection")
@@ -68,15 +68,15 @@ func SendDataToClients() {
 	}
 
 	for connection := range connections{
-		go func(){
+		go func(currentConnection net.Conn){
 
-			_, err := connection.Write(data)
+			_, err := currentConnection.Write(data)
 
 			if err != nil {
 				fmt.Println("Error:", err)
 				return
 			}
-		}()
+		}(connection)
 	}
 	
 }
@@ -110,10 +110,10 @@ func HandleBroadcast() {
 
 	fmt.Println("Listening for filewatcher message signals to broadcast")
 	for {
-		messageType := <-messageChan
-		if messageType == "00" {
+		eventMsg := <-messageChan
+		if len(eventMsg) > 0 {
 			fmt.Println("Message sent to client")
-			SendDataToClients()
+			SendDataToClients(eventMsg)
 		}
 	}
 }
