@@ -17,6 +17,8 @@ type Config struct {
 	Server struct {
 		Host string `json:"host"`
 		Port string `json:"port"`
+		Username string `json:"username"`
+		Password string `json:"password"`
 	} `json:"server"`
 	Watch []models.WatchStructure `json:"watch"`
 }
@@ -66,6 +68,9 @@ func main() {
 		log.Fatalln(err)
 		return
 	}
+
+	core.ConnUsername = config.Server.Username
+	core.ConnPassword = config.Server.Password
 
 	go func(watch []models.WatchStructure) {
 		core.Watch(watch)

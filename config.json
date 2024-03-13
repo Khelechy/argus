@@ -1,7 +1,9 @@
 {
     "server": {
         "host": "localhost",
-        "port": "1337"
+        "port": "1337",
+        "username": "testuser",
+        "password": "testpassword"
     },
     "watch": [
         {
