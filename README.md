@@ -15,6 +15,8 @@ Leveraging the power of Go's concurrency and the cross-platform support of fsnot
 
 - TCP/IP Communication: Connect to ARGUS via TCP/IP to receive notifications, enabling seamless integration with a wide range of applications and services.
 
+- Multiple Clients: ARGUS supports multiple connected listening clients with no limit.
+
 - Authentication Support: Ensure secure communication by authenticating clients connecting to ARGUS, providing an additional layer of protection for sensitive data.
 
 - Multiple File/Folder Watching: Watch multiple files and folders concurrently, allowing users to monitor various locations simultaneously.
@@ -51,3 +53,11 @@ Note: If you are in the current working directory of argus cloned project you do
 ```sh
 ./argus -config=/path/to/config.json
 ```
+
+
+## Contribution
+Feel like something is missing? Fork the repo and send a PR.
+
+Encountered a bug? Fork the repo and send a PR.
+
+Alternatively, open an issue and we'll get to it as soon as we can.
