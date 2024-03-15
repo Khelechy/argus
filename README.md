@@ -40,7 +40,7 @@ git clone https://github.com/khelechy/argus.git
 Build an executable with the command
 ```sh
 cd argus
-go build -o argus main.go
+go build
 ```
 
 Run argus executable with the command
