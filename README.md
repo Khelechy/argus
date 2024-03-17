@@ -85,7 +85,7 @@ Sample config file
         }
     ]
 }
-      
+```     
 
 
 ## Contribution
