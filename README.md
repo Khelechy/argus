@@ -4,6 +4,10 @@ ARGUS is a versatile and lightweight file/folder watcher designed for seamless i
 It provides real-time notification events for file and folder operations, allowing connected clients to stay updated on changes within the watched directories. 
 Leveraging the power of Go's concurrency and the cross-platform support of fsnotify, ARGUS ensures robust performance across various operating systems.
 
+## Available Client Libraries
+- [Argus Go](https://github.com/Khelechy/argus-go)
+- [Argus .NET](https://github.com/Khelechy/argus-dotnet)
+
 ## Dependencies
 
 - golang +v1.19
