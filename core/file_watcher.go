@@ -15,9 +15,6 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-type Argus struct {
-}
-
 var messageChan chan string
 var fileWatcher *fsnotify.Watcher
 
@@ -47,12 +44,6 @@ func Watch(watchStructures []models.WatchStructure) {
 				newEvent := &models.Event{}
 				newEvent.Timestamp = time.Now()
 				newEvent.Name = event.Name
-				eventData, err := json.Marshal(event)
-				if err != nil {
-					log.Fatal(err)
-					return
-				}
-				newEvent.EventMetaData = string(eventData)
 
 				if event.Op&fsnotify.Create == fsnotify.Create {
 					newEvent.ActionDescription = fmt.Sprintf("File created: %s", event.Name)
