@@ -61,3 +61,7 @@ Feel like something is missing? Fork the repo and send a PR.
 Encountered a bug? Fork the repo and send a PR.
 
 Alternatively, open an issue and we'll get to it as soon as we can.
+
+### Building Target Language Libraries
+
+To contribute to building the ARGUS client libraries and conforming with the underlying standards and procedures please read the [contributing docs](https://github.com/Khelechy/argus/blob/main/CONTRIBUTING.md)
