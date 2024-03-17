@@ -15,7 +15,7 @@ Building ARGUS client libraries invloves 3 straight simple steps.
 
 ### Connecting to ARGUS Engine
 
-Argus Engine leverages TCP/IP protocol is establish and maintain connections between the Engine and clients.
+Argus Engine leverages TCP/IP protocol to establish and maintain connections between the Engine and clients.
 
 A simple TCP/IP dial/connect to the IP and Port is enough to do the trick.
 
