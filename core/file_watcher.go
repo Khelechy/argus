@@ -100,6 +100,10 @@ func Watch(watchStructures []models.WatchStructure) {
 
 func watchDirRecursively(path string, fi os.FileInfo, err error) error {
 
+	if _, err := os.Stat(path); err != nil {
+		return err
+	}
+
 	// since fsnotify can watch all the files in a directory, watchers only need
 	// to be added to each nested directory
 	if fi.Mode().IsDir() {
