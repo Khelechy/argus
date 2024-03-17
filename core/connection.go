@@ -103,6 +103,9 @@ func SendDataToClients(eventMsg string) {
 func validateClientAuthentication(clientConn *Connection) {
 	defer func() {
 		clientConn.Conn.Close()
+		connLock.Lock()
+		delete(connections, clientConn.Conn)
+		connLock.Unlock()
 	}()
 
 	buffer := make([]byte, 1024)
