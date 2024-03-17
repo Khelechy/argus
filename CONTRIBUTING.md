@@ -136,7 +136,7 @@ Note: The Json string expected from the ARGUS Engine is as below:
 		"Action" : "string",
 		"ActionDescription: "string",
 		"Name": "string",
-		"Timestamp": date
+		"Timestamp": datetime
 	}
 ```
 
