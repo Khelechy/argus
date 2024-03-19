@@ -31,6 +31,7 @@ Leveraging the power of Go's concurrency and the cross-platform support of fsnot
 
 - Flexible Configuration: Includes a default `config.json` file in the root of the project for configurations samples and authentication credentials, (Leave username and password empty if you dont need auth).
 
+![Argus](https://i.ibb.co/JKB8Nsy/argusbg.png)
 
 # Getting Started:
 
