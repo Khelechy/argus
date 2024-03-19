@@ -16,7 +16,6 @@ import (
 )
 
 var messageChan chan string
-var fileWatcher *fsnotify.Watcher
 
 func Watch(watchStructures []models.WatchStructure) {
 
@@ -29,10 +28,7 @@ func Watch(watchStructures []models.WatchStructure) {
 		return
 	}
 
-	fileWatcher = watcher
-
 	defer watcher.Close()
-	defer fileWatcher.Close()
 
 	done := make(chan bool)
 
@@ -40,7 +36,7 @@ func Watch(watchStructures []models.WatchStructure) {
 	go func() {
 		for {
 			select {
-			case event := <-fileWatcher.Events:
+			case event := <-watcher.Events:
 				newEvent := &models.Event{}
 				newEvent.Timestamp = time.Now()
 				newEvent.Name = event.Name
@@ -74,15 +70,31 @@ func Watch(watchStructures []models.WatchStructure) {
 					messageChan <- string(data)
 				}(*newEvent)
 
-			case err := <-fileWatcher.Errors:
+			case err := <-watcher.Errors:
 				log.Println("Error:", err)
 			}
 		}
 	}()
 
 	for _, watchStructure := range watchStructures {
-		if watchStructure.IsFolder && watchStructure.WatchRecursively { // Watch Recursively
-			if err := filepath.Walk(watchStructure.Path, watchDirRecursively); err != nil {
+		if watchStructure.WatchRecursively { // Watch Recursively
+			if err := filepath.Walk(watchStructure.Path, func(path string, fi os.FileInfo, err error) error {
+				if _, err := os.Stat(path); err != nil {
+					return err
+				}
+
+				// since fsnotify can watch all the files in a directory, watchers only need
+				// to be added to each nested directory
+				if fi.Mode().IsDir() {
+					return watcher.Add(path)
+				}
+
+				if err := watcher.Add(path); err != nil {
+					log.Println("ERROR", err)
+				} // since path isnt a directory, add to watch (non recursively)
+
+				return nil
+			}); err != nil {
 				log.Println("ERROR", err)
 			}
 		} else {
@@ -94,21 +106,5 @@ func Watch(watchStructures []models.WatchStructure) {
 		}
 	}
 
-
 	<-done
-}
-
-func watchDirRecursively(path string, fi os.FileInfo, err error) error {
-
-	if _, err := os.Stat(path); err != nil {
-		return err
-	}
-
-	// since fsnotify can watch all the files in a directory, watchers only need
-	// to be added to each nested directory
-	if fi.Mode().IsDir() {
-		return fileWatcher.Add(path)
-	}
-
-	return nil
 }
