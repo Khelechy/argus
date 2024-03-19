@@ -15,7 +15,7 @@ Building ARGUS client libraries invloves 3 straight simple steps.
 
 ### Connecting to ARGUS Engine
 
-Argus Engine leverages TCP/IP protocol is establish and maintain connections between the Engine and clients.
+Argus Engine leverages TCP/IP protocol to establish and maintain connections between the Engine and clients.
 
 A simple TCP/IP dial/connect to the IP and Port is enough to do the trick.
 
@@ -72,3 +72,71 @@ The authentication message is a connection string in the formart `"<ArgusAuth>Us
 ```
 
 ### Listening for events and messages
+
+In order to listen for events and messages you have to continously listen on the TCP stream for incoming data and then deserialize into an identifiable object ( for events), or log out messages for ordinary application messages.
+
+```go
+	buffer := make([]byte, 1024)
+	for {
+		// Read data from the client
+		n, err := conn.Read(buffer)
+		if err != nil {
+			argus.Errors <- err
+		}
+
+		data := string(buffer[:n])
+
+		if len(data) > 0 {
+
+			isJson, event, str := utils.IsJsonString(data)
+	
+			if isJson {
+				// Push event to event channel
+				argus.Events <- event
+			} else {
+	
+				argus.Messages <- fmt.Sprintf("Received: %s\n", str)
+			}
+		}
+
+	}
+```
+
+```c#
+ var buffer = new byte[1024];
+ int bytesRead;
+ while (true)
+ {
+     bytesRead = _stream.Read(buffer, 0, buffer.Length);
+     string response = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+
+     if (!string.IsNullOrEmpty(response))
+     {
+
+         var (isJson, argusEvent, message) = Helpers.IsJsonString(response);
+         if (isJson)
+         {
+             OnRaiseCustomEvent(new ArgusEventArgs(argusEvent));
+         }
+         else
+         {
+             Console.WriteLine("Received: " + response);
+         }
+     }
+
+ }
+```
+
+Return the fetched event to the user.
+
+Note: The Json string expected from the ARGUS Engine is as below:
+
+```json
+	{
+		"Action" : "string",
+		"ActionDescription: "string",
+		"Name": "string",
+		"Timestamp": datetime
+	}
+```
+
