@@ -70,17 +70,14 @@ Sample config file
     "watch": [
         {
             "path": "C:/Users/PFY-102.PFY-102/source/repos/Mine/argus/testfolder2",
-            "isFolder": true,
             "watchRecursively": true
         },
         {
             "path": "C:/Users/PFY-102.PFY-102/source/repos/Mine/argus/testfolder",
-            "isFolder": true,
             "watchRecursively": false
         },
         {
             "path": "C:/Users/PFY-102.PFY-102/source/repos/Mine/argus/file.txt",
-            "isFolder": false,
             "watchRecursively": false
         }
     ]
