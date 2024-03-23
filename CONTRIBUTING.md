@@ -95,7 +95,6 @@ In order to listen for events and messages you have to continously listen on the
                 // Push event to event channel
                 argus.Events <- event
             } else {
-
                 argus.Messages <- fmt.Sprintf("Received: %s\n", str)
             }
         }
