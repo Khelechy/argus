@@ -59,7 +59,7 @@ Run argus executable with the command
 ./argus
 ```
 
-Note: If you are in the current working directory of argus cloned project you dont need to pass a config file as flag. But if you are not, you need to pass a config file path as a command line argument.
+Note: If you are in the current working directory of argus cloned project you don't need to pass a config file as flag. But if you are not, you need to pass a config file path as a command line argument.
 
 ```sh
 ./argus -config=/path/to/config.json
