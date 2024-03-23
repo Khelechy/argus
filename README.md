@@ -8,6 +8,7 @@ Leveraging the power of Go's concurrency and the cross-platform support of fsnot
 - [Argus Go](https://github.com/Khelechy/argus-go)
 - [Argus .NET](https://github.com/Khelechy/argus-dotnet)
 - [Argus PHP](https://github.com/Khelechy/argus-php)
+- [Argus Rby](https://github.com/Khelechy/argus-ruby)
 
 ## Dependencies
 
