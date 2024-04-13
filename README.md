@@ -1,13 +1,16 @@
 # A.R.G.U.S
 
-ARGUS is a versatile and lightweight file/folder watcher designed for seamless integration into any environment. 
-It provides real-time notification events for file and folder operations, allowing connected clients to stay updated on changes within the watched directories. 
+ARGUS is a versatile and lightweight file/folder watcher designed for seamless integration into any environment.
+It provides real-time notification events for file and folder operations, allowing connected clients to stay updated on changes within the watched directories.
 Leveraging the power of Go's concurrency and the cross-platform support of fsnotify, ARGUS ensures robust performance across various operating systems.
 
 ## Available Client Libraries
+
 - [Argus Go](https://github.com/Khelechy/argus-go)
 - [Argus .NET](https://github.com/Khelechy/argus-dotnet)
 - [Argus PHP](https://github.com/Khelechy/argus-php)
+- [Argus Ruby](https://github.com/Khelechy/argus-ruby)
+- [Argus Python](https://github.com/jayjaychukwu/argus-python)
 
 ## Dependencies
 
@@ -42,33 +45,37 @@ Support for wildcard extension, allows you to watch files in a folder that match
 
 Add sample path in the format  `"C:/Users/PFY-102.PFY-102/source/repos/Mine/argus/testfolder/*.json"` to your config, please note the `*.json`, other examples are; `*.yaml`, `*.log` etc.
 
-# Getting Started:
+## Getting Started:
 
 To clone and build ARGUS, follow these simple steps:
 
 Clone repo to your local directory with the command
+
 ```sh
 git clone https://github.com/khelechy/argus.git
 ```
 
 Build an executable with the command
+
 ```sh
 cd argus
 go build
 ```
 
 Run argus executable with the command
+
 ```sh
 ./argus
 ```
 
-Note: If you are in the current working directory of argus cloned project you dont need to pass a config file as flag. But if you are not, you need to pass a config file path as a command line argument.
+Note: If you are in the current working directory of argus cloned project you don't need to pass a config file as flag. But if you are not, you need to pass a config file path as a command line argument.
 
 ```sh
 ./argus -config=/path/to/config.json
 ```
 
 Sample config file
+
 ```json
 {
     "server": {
@@ -96,10 +103,10 @@ Sample config file
         }
     ]
 }
-```     
-
+```
 
 ## Contribution
+
 Feel like something is missing? Fork the repo and send a PR.
 
 Encountered a bug? Fork the repo and send a PR.
