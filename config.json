@@ -11,12 +11,12 @@
             "watchRecursively": true
         },
         {
-            "path": "C:/Users/PFY-102.PFY-102/source/repos/Mine/argus/testfolder",
+            "path": "C:/Users/PFY-102.PFY-102/source/repos/Mine/argus/testfolder/*.json",
             "watchRecursively": false
         },
         {
             "path": "C:/Users/PFY-102.PFY-102/source/repos/Mine/argus/file.txt",
-            "watchRecursively": true
+            "watchRecursively": false
         }
     ]
 }

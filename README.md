@@ -31,13 +31,21 @@ Leveraging the power of Go's concurrency and the cross-platform support of fsnot
 
 - Recursive Folder Watching: Enable recursive watching to track changes within nested directories, providing comprehensive coverage of file system activity.
 
+- Wildcard extensions: Watch files in a folder that matches a particular extension, recursively or not, `"C:/Users/PFY-102.PFY-102/source/repos/Mine/argus/testfolder/*.json"`.
+
 - Cross-platform Compatibility: Utilize ARGUS across different operating systems, thanks to its dependency on fsnotify, which offers consistent performance and behavior regardless of the platform.
 
 - Flexible Configuration: Includes a default `config.json` file in the root of the project for configurations samples and authentication credentials, (Leave username and password empty if you dont need auth).
 
 ![Argus](https://i.ibb.co/JKB8Nsy/argusbg.png)
 
-## Getting Started
+## What's New:
+
+Support for wildcard extension, allows you to watch files in a folder that matches a particular file extenion, with support for recursive watching (Subdirectories). 
+
+Add sample path in the format  `"C:/Users/PFY-102.PFY-102/source/repos/Mine/argus/testfolder/*.json"` to your config, please note the `*.json`, other examples are; `*.yaml`, `*.log` etc.
+
+## Getting Started:
 
 To clone and build ARGUS, follow these simple steps:
 
@@ -83,6 +91,10 @@ Sample config file
         },
         {
             "path": "C:/Users/PFY-102.PFY-102/source/repos/Mine/argus/testfolder",
+            "watchRecursively": false
+        },
+        {
+            "path": "C:/Users/PFY-102.PFY-102/source/repos/Mine/argus/testfolder/*.json",
             "watchRecursively": false
         },
         {
