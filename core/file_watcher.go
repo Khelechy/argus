@@ -6,11 +6,13 @@ import (
 	"log"
 	"os"
 	"time"
+	"strings"
 
 	"path/filepath"
 
 	"github.com/khelechy/argus/enums"
 	"github.com/khelechy/argus/models"
+	"github.com/khelechy/argus/utils"
 
 	"github.com/fsnotify/fsnotify"
 )
@@ -77,33 +79,84 @@ func Watch(watchStructures []models.WatchStructure) {
 	}()
 
 	for _, watchStructure := range watchStructures {
-		if watchStructure.WatchRecursively { // Watch Recursively
-			if err := filepath.Walk(watchStructure.Path, func(path string, fi os.FileInfo, err error) error {
-				if _, err := os.Stat(path); err != nil {
-					return err
-				}
 
-				// since fsnotify can watch all the files in a directory, watchers only need
-				// to be added to each nested directory
-				if fi.Mode().IsDir() {
-					return watcher.Add(path)
-				}
+		isWildcard, folderPath, extension := utils.TreatAsWildcard(watchStructure.Path)
 
-				if err := watcher.Add(path); err != nil {
+		if isWildcard { // Handle as wildcard
+
+			if watchStructure.WatchRecursively{
+				if err := filepath.Walk(folderPath, func(path string, fi os.FileInfo, err error) error {
+
+					if filepath.Ext(path) == extension {
+						if err := watcher.Add(path); err != nil {
+							log.Println("ERROR", err)
+						} 
+					}
+
+					return nil
+				}); err != nil {
 					log.Println("ERROR", err)
-				} // since path isnt a directory, add to watch (non recursively)
+				}
+			}else{
 
-				return nil
-			}); err != nil {
-				log.Println("ERROR", err)
+				dir, err := os.Open(folderPath)
+				if err != nil {
+					log.Println("ERROR", err)
+				}
+				defer dir.Close()
+
+				// Read the contents of the folder
+				files, err := dir.Readdir(0)
+				if err != nil {
+					log.Println("ERROR", err)
+				}
+
+				// Iterate over the files in the folder
+				for _, file := range files {
+
+					// Check if the file has the supplied extension
+					if strings.HasSuffix(file.Name(), extension) {
+
+						newPath := fmt.Sprintf("%s/%s", folderPath, file.Name())
+						err = watcher.Add(newPath)
+						if err != nil {
+							log.Println("ERROR", err)
+						}
+					}
+				}
+
 			}
-		} else {
 
+		}else if !isWildcard && len(extension) > 0 { // Handle as a file
+			
 			err = watcher.Add(watchStructure.Path)
 			if err != nil {
 				log.Println("ERROR", err)
 			}
+
+		}else if !isWildcard && len(extension) == 0 { // Handle as a folder
+			if watchStructure.WatchRecursively {
+				if err := filepath.Walk(watchStructure.Path, func(path string, fi os.FileInfo, err error) error {
+					if _, err := os.Stat(path); err != nil {
+						return err
+					}
+	
+					// since fsnotify can watch all the files in a directory, watchers only need
+					// to be added to each nested directory
+					if fi.Mode().IsDir() {
+						return watcher.Add(path)
+					}
+	
+					return nil
+	
+				}); err != nil {
+					log.Println("ERROR", err)
+				}
+			}else{
+				watcher.Add(watchStructure.Path)
+			}
 		}
+		
 	}
 
 	<-done

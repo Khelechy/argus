@@ -2,7 +2,9 @@ package utils
 
 import (
 	"errors"
+	"path/filepath"
 	"regexp"
+	"strings"
 )
 
 func ExtractAuthData(connectionString string) (string, string, error) {
@@ -21,4 +23,26 @@ func ExtractAuthData(connectionString string) (string, string, error) {
 	} else {
 		return "", "", errors.New("could not extract auth data")
 	}
+}
+
+func TreatAsWildcard(pathWithWildcard string) (bool, string, string) {
+	folderPath, fileName := filepath.Split(pathWithWildcard)
+
+	dotIndex := strings.LastIndex(fileName, ".")
+
+	if dotIndex != -1 && dotIndex < len(fileName)-1 {
+		folderPath = strings.TrimSuffix(folderPath, "/")
+
+		extension := filepath.Ext(fileName)
+
+		if !strings.ContainsRune(fileName, '*') {
+			return false, folderPath, extension
+		}
+
+		extension = strings.TrimPrefix(extension, "*")
+
+		return true, folderPath, extension
+	}
+
+	return false, folderPath, "" // Return empty file extension if its an absolute folder
 }
