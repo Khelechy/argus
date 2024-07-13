@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"flag"
+	"fmt"
 	"io"
 	"log"
 	"os"
-	"fmt"
 
 	"github.com/khelechy/argus/core"
 	"github.com/khelechy/argus/models"
@@ -15,8 +15,8 @@ import (
 
 type Config struct {
 	Server struct {
-		Host string `json:"host"`
-		Port string `json:"port"`
+		Host     string `json:"host"`
+		Port     string `json:"port"`
 		Username string `json:"username"`
 		Password string `json:"password"`
 	} `json:"server"`
@@ -28,9 +28,9 @@ var configFileName = flag.String("config", "config.json", "Location of the confi
 func main() {
 
 	fmt.Println("  _    _    _    _   _  ")
-    fmt.Println(" / \\  / \\  / \\  / \\ / \\ ")
-    fmt.Println("( A )( R )( G )( U )( S )")
-    fmt.Println(" \\_/  \\_/  \\_/  \\_/ \\_/ ")
+	fmt.Println(" / \\  / \\  / \\  / \\ / \\ ")
+	fmt.Println("( A )( R )( G )( U )( S )")
+	fmt.Println(" \\_/  \\_/  \\_/  \\_/ \\_/ ")
 
 	flag.Parse()
 
