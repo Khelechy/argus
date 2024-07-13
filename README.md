@@ -11,6 +11,7 @@ Leveraging the power of Go's concurrency and the cross-platform support of fsnot
 - [Argus PHP](https://github.com/Khelechy/argus-php)
 - [Argus Ruby](https://github.com/Khelechy/argus-ruby)
 - [Argus Python](https://github.com/jayjaychukwu/argus-python)
+- [Argus Java](https://github.com/Oga-Emma/argus-java)
 
 ## Dependencies
 
@@ -40,6 +41,8 @@ Leveraging the power of Go's concurrency and the cross-platform support of fsnot
 ![Argus](https://i.ibb.co/JKB8Nsy/argusbg.png)
 
 ## What's New:
+
+Fixed major authentication bypass bug
 
 Support for wildcard extension, allows you to watch files in a folder that matches a particular file extenion, with support for recursive watching (Subdirectories). 
 
