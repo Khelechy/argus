@@ -10,8 +10,9 @@ import (
 )
 
 type Connection struct {
-	Conn     net.Conn
-	IsActive bool
+	Conn            net.Conn
+	IsActive        bool
+	IsAuthenticated bool
 }
 
 var connections = make(map[net.Conn]*Connection)
@@ -21,10 +22,16 @@ var (
 
 	ConnUsername string
 	ConnPassword string
+
+	hasAuthData bool
 )
 
 func SetupTCP(host, port string) {
 	// Listen for incoming connections
+
+	if len(ConnUsername) > 0 && len(ConnPassword) > 0 {
+		hasAuthData = true
+	}
 
 	addr := fmt.Sprintf("%s:%s", host, port)
 	listener, err := net.Listen("tcp", addr)
@@ -57,9 +64,9 @@ func SetupTCP(host, port string) {
 		connLock.Unlock()
 
 		// Handle client connection in a goroutine
-		if len(ConnUsername) > 0 && len(ConnPassword) > 0 {
+		if hasAuthData {
 			go validateClientAuthentication(connection)
-		}else{
+		} else {
 			go handleClient(connection)
 		}
 	}
@@ -87,17 +94,35 @@ func SendDataToClients(eventMsg string) {
 	}
 
 	for connection := range connections {
-		go func(currentConnection net.Conn) {
+		if !hasAuthData {
+			go func(currentConnection net.Conn, currentData []byte) {
 
-			_, err := currentConnection.Write(data)
+				sendDataToConnection(currentConnection, currentData)
+			}(connection, data)
+		} else {
+			if connections[connection].IsAuthenticated {
+				go func(currentConnection net.Conn, currentData []byte) {
 
-			if err != nil {
-				fmt.Println("Error:", err)
-				return
+					sendDataToConnection(currentConnection, currentData)
+				}(connection, data)
+			}else{
+				fmt.Println("One or more connection(s) is not authenticated")
+				data = []byte("Unauthorized connection \n")
+				go func(currentConnection net.Conn, currentData []byte) {
+
+					sendDataToConnection(currentConnection, currentData)
+				}(connection, data)
 			}
-		}(connection)
+		}
 	}
+}
 
+func sendDataToConnection(conn net.Conn, data []byte) {
+	_, err := conn.Write(data)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
 }
 
 func validateClientAuthentication(clientConn *Connection) {
@@ -134,6 +159,10 @@ func validateClientAuthentication(clientConn *Connection) {
 
 	fmt.Println("Authentication successful for:", clientConn.Conn.RemoteAddr())
 
+	connLock.Lock()
+	clientConn.IsAuthenticated = true
+	connLock.Unlock()
+
 	response := []byte("Authentication successful \n")
 
 	_, err = clientConn.Conn.Write(response)
@@ -169,7 +198,6 @@ func handleClient(clientConn *Connection) {
 
 	}
 }
-
 
 func authenticate(username string, password string, conn net.Conn) bool {
 
